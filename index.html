@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ultimate Smart Calculator</title>
+  <style>
+    :root {
+      --bg: #050510;
+      --blue: #00f3ff;
+      --pink: #ff00ff;
+      --green: #39ff14;
+      --panel: rgba(10, 10, 25, 0.95);
+      --glass: rgba(255, 255, 255, 0.05);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, rgba(0, 243, 255, 0.12), transparent 25%),
+                  linear-gradient(45deg, rgba(255, 0, 255, 0.08), transparent 25%),
+                  var(--bg);
+      color: white;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .calculator {
+      width: min(420px, 100%);
+      padding: 28px;
+      border-radius: 26px;
+      border: 1px solid rgba(0, 243, 255, 0.4);
+      background: linear-gradient(145deg, rgba(15, 15, 35, 0.98), rgba(5, 5, 15, 0.95));
+      box-shadow: 0 0 30px rgba(0, 243, 255, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .calculator::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,255,255,0.12), rgba(255,0,255,0.08));
+      pointer-events: none;
+      opacity: 0.4;
+    }
+
+    .title {
+      text-align: center;
+      font-size: 1.35rem;
+      letter-spacing: 0.2rem;
+      margin-bottom: 20px;
+      color: var(--blue);
+      text-shadow: 0 0 14px rgba(0, 243, 255, 0.45);
+      position: relative;
+      z-index: 1;
+    }
+
+    .display-group {
+      position: relative;
+      margin-bottom: 18px;
+      z-index: 1;
+    }
+
+    #display {
+      width: 100%;
+      height: 72px;
+      padding: 0 20px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(0, 0, 0, 0.5);
+      color: var(--green);
+      font-size: 2rem;
+      font-weight: 700;
+      text-align: right;
+      outline: none;
+      box-shadow: inset 0 0 18px rgba(0, 255, 255, 0.08);
+    }
+
+    #display.error {
+      color: #ff3b6f;
+      border-color: rgba(255, 55, 111, 0.5);
+      animation: shake 0.4s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      z-index: 1;
+      position: relative;
+    }
+
+    button {
+      min-height: 62px;
+      border-radius: 16px;
+      border: none;
+      background: rgba(255,255,255,0.06);
+      color: white;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
+    }
+
+    button:hover { transform: translateY(-2px); }
+    button:active { transform: translateY(0); }
+
+    .btn-op { background: rgba(255, 0, 255, 0.18); }
+    .btn-eq { grid-column: span 2; background: rgba(57, 255, 20, 0.22); }
+    .btn-clear { background: rgba(255, 7, 58, 0.22); }
+    .btn-num { background: rgba(0, 243, 255, 0.12); }
+    .btn-special { background: rgba(255, 229, 0, 0.18); }
+
+    .history {
+      margin-top: 18px;
+      max-height: 130px;
+      overflow-y: auto;
+      padding-right: 6px;
+      color: rgba(255,255,255,0.82);
+      font-size: 0.9rem;
+    }
+
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 8px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .history-item span:last-child {
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .footer {
+      margin-top: 18px;
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.6);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <div class="title">ULTIMATE SMART CALCULATOR</div>
+    <div class="display-group">
+      <input id="display" type="text" readonly placeholder="0" />
+    </div>
+    <div class="buttons">
+      <button class="btn-special" onclick="press('(')">(</button>
+      <button class="btn-special" onclick="press(')')">)</button>
+      <button class="btn-special" onclick="press('%')">%</button>
+      <button class="btn-op" onclick="press('/')">÷</button>
+
+      <button class="btn-num" onclick="press('7')">7</button>
+      <button class="btn-num" onclick="press('8')">8</button>
+      <button class="btn-num" onclick="press('9')">9</button>
+      <button class="btn-op" onclick="press('*')">×</button>
+
+      <button class="btn-num" onclick="press('4')">4</button>
+      <button class="btn-num" onclick="press('5')">5</button>
+      <button class="btn-num" onclick="press('6')">6</button>
+      <button class="btn-op" onclick="press('-')">-</button>
+
+      <button class="btn-num" onclick="press('1')">1</button>
+      <button class="btn-num" onclick="press('2')">2</button>
+      <button class="btn-num" onclick="press('3')">3</button>
+      <button class="btn-op" onclick="press('+')">+</button>
+
+      <button class="btn-num" onclick="press('0')">0</button>
+      <button class="btn-num" onclick="press('.')">.</button>
+      <button class="btn-eq" onclick="calculate()">=</button>
+      <button class="btn-clear" onclick="clearDisplay()">C</button>
+    </div>
+
+    <div class="history" id="history">
+      <div class="history-item"><span>History</span><span>Result</span></div>
+    </div>
+    <div class="footer">Use your browser keyboard or the buttons above.</div>
+  </div>
+
+  <script>
+    let current = '';
+    const display = document.getElementById('display');
+    const history = document.getElementById('history');
+
+    function press(value) {
+      current += value;
+      display.value = current;
+      display.classList.remove('error');
+    }
+
+    function clearDisplay() {
+      current = '';
+      display.value = '';
+      display.classList.remove('error');
+    }
+
+    function calculate() {
+      if (!current) return;
+      try {
+        const result = Function('return ' + current)();
+        display.value = result;
+        addHistory(current, result);
+        current = String(result);
+      } catch (err) {
+        display.value = 'Error';
+        display.classList.add('error');
+      }
+    }
+
+    function addHistory(expression, result) {
+      const item = document.createElement('div');
+      item.className = 'history-item';
+      item.innerHTML = `<span>${expression}</span><span>${result}</span>`;
+      history.appendChild(item);
+      history.scrollTop = history.scrollHeight;
+    }
+
+    document.addEventListener('keydown', (event) => {
+      const key = event.key;
+      if (/[0-9.%+\-*/()]/.test(key)) {
+        press(key);
+      } else if (key === 'Enter') {
+        calculate();
+      } else if (key === 'Backspace') {
+        current = current.slice(0, -1);
+        display.value = current;
+      } else if (key === 'Escape') {
+        clearDisplay();
+      }
+    });
+  </script>
+</body>
+</html>
