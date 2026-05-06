@@ -1,0 +1,12 @@
+# Python environment
+.venv/
+__pycache__/
+*.pyc
+
+# Local IDE files
+.vscode/
+
+# Downloaded CLI / installer artifacts
+gh-cli/
+gh.msi
+gh.zip
