@@ -1,12 +1,34 @@
-# Python environment
-.venv/
-__pycache__/
-*.pyc
+# OS Files
+.DS_Store
+Thumbs.db
+.windows-build-helper/
 
-# Local IDE files
+# IDE
 .vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+.settings/
+*.sublime-project
+*.sublime-workspace
 
-# Downloaded CLI / installer artifacts
-gh-cli/
-gh.msi
-gh.zip
+# Dependencies
+node_modules/
+venv/
+env/
+
+# Build
+build/
+dist/
+*.egg-info/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Misc
+.env
+.DS_Store
